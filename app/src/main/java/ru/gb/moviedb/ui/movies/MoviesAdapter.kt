@@ -2,6 +2,8 @@ package ru.gb.moviedb.ui.movies
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import ru.gb.moviedb.R
@@ -16,11 +18,10 @@ class MoviesAdapter(private val itemListener: OnItemViewClickListener) :
         fun onClick(position: Int)
     }
 
-    private var moviesList: List<Result> = listOf()
+    private val diffUtil = AsyncListDiffer(this, DIFF_CALLBACK)
 
-    fun setData(list: List<Result>) {
-        moviesList = list
-        notifyDataSetChanged()
+    fun setData(newList: List<Result>) {
+        diffUtil.submitList(newList)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -29,11 +30,11 @@ class MoviesAdapter(private val itemListener: OnItemViewClickListener) :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(moviesList[position])
+        holder.bind(diffUtil.currentList[position])
         holder.itemView.setOnClickListener { itemListener.onClick(position) }
     }
 
-    override fun getItemCount(): Int = moviesList.size
+    override fun getItemCount(): Int = diffUtil.currentList.size
 
     inner class ViewHolder(private val binding: ItemMovieBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -47,5 +48,21 @@ class MoviesAdapter(private val itemListener: OnItemViewClickListener) :
             binding.popularity.text = movie.popularity.toString()
             binding.releaseDate.text = movie.releaseDate
         }
+    }
+
+    companion object {
+        val DIFF_CALLBACK: DiffUtil.ItemCallback<Result> =
+            object : DiffUtil.ItemCallback<Result>() {
+
+                override fun areItemsTheSame(
+                    oldItem: Result,
+                    newItem: Result
+                ): Boolean = oldItem.id == newItem.id
+
+                override fun areContentsTheSame(
+                    oldItem: Result,
+                    newItem: Result
+                ): Boolean = oldItem.id == newItem.id
+            }
     }
 }
