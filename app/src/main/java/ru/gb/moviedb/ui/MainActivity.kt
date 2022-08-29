@@ -2,6 +2,8 @@ package ru.gb.moviedb.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.commit
+import androidx.fragment.app.replace
 import androidx.lifecycle.ViewModelProvider
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -9,6 +11,7 @@ import ru.gb.moviedb.databinding.ActivityMainBinding
 import ru.gb.moviedb.repository.RepositoryMovieImpl
 import ru.gb.moviedb.retrofit.ApiService
 import ru.gb.moviedb.retrofit.ApiService.Companion.BASE_URL
+import ru.gb.moviedb.ui.movies.MoviesFragment
 
 class MainActivity : AppCompatActivity(), ViewModelSaver {
     private lateinit var binding: ActivityMainBinding
@@ -27,6 +30,12 @@ class MainActivity : AppCompatActivity(), ViewModelSaver {
             .create(ApiService::class.java)
 
         viewModel.setRepository(RepositoryMovieImpl(apiService))
+
+        supportFragmentManager.commit {
+            replace<MoviesFragment>(binding.fragmentContainer.id)
+            setReorderingAllowed(true)
+            addToBackStack("Movies")
+        }
     }
 
     override fun getViewModel() = viewModel
