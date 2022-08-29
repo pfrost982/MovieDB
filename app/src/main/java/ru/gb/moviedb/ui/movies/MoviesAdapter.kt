@@ -18,9 +18,9 @@ class MoviesAdapter(private val itemListener: OnItemViewClickListener) :
         fun onClick(position: Int)
     }
 
-    private val diffUtil = AsyncListDiffer(this, DIFF_CALLBACK)
+    private val diffUtil = AsyncListDiffer(this, DiffCallback())
 
-    fun setData(newList: List<Result>) {
+    fun submitList(newList: List<Result>) {
         diffUtil.submitList(newList)
     }
 
@@ -50,19 +50,15 @@ class MoviesAdapter(private val itemListener: OnItemViewClickListener) :
         }
     }
 
-    companion object {
-        val DIFF_CALLBACK: DiffUtil.ItemCallback<Result> =
-            object : DiffUtil.ItemCallback<Result>() {
+    private inner class DiffCallback : DiffUtil.ItemCallback<Result>() {
+        override fun areItemsTheSame(
+            oldItem: Result,
+            newItem: Result
+        ): Boolean = oldItem.id == newItem.id
 
-                override fun areItemsTheSame(
-                    oldItem: Result,
-                    newItem: Result
-                ): Boolean = oldItem.id == newItem.id
-
-                override fun areContentsTheSame(
-                    oldItem: Result,
-                    newItem: Result
-                ): Boolean = oldItem.id == newItem.id
-            }
+        override fun areContentsTheSame(
+            oldItem: Result,
+            newItem: Result
+        ): Boolean = oldItem.id == newItem.id
     }
 }

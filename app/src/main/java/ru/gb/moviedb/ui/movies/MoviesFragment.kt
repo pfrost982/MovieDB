@@ -40,7 +40,7 @@ class MoviesFragment : Fragment() {
         }
         recyclerView.adapter = moviesAdapter
         viewModel.getData()
-        viewModel.liveDataMoviesList.observe(viewLifecycleOwner) { moviesAdapter.setData(it) }
+        viewModel.liveDataMoviesList.observe(viewLifecycleOwner) { moviesAdapter.submitList(it) }
     }
     override fun onDestroyView() {
         super.onDestroyView()
