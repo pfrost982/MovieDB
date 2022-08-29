@@ -1,4 +1,4 @@
-package ru.gb.moviedb
+package ru.gb.moviedb.ui
 
 import androidx.lifecycle.ViewModel
 
