@@ -6,10 +6,11 @@ import androidx.lifecycle.ViewModelProvider
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import ru.gb.moviedb.databinding.ActivityMainBinding
+import ru.gb.moviedb.repository.RepositoryMovieImpl
 import ru.gb.moviedb.retrofit.ApiService
 import ru.gb.moviedb.retrofit.ApiService.Companion.BASE_URL
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), ViewModelSaver {
     private lateinit var binding: ActivityMainBinding
     private lateinit var viewModel: MainViewModel
 
@@ -24,5 +25,13 @@ class MainActivity : AppCompatActivity() {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(ApiService::class.java)
+
+        viewModel.setRepository(RepositoryMovieImpl(apiService))
     }
+
+    override fun getViewModel() = viewModel
+}
+
+fun interface ViewModelSaver {
+    fun getViewModel(): MainViewModel
 }
