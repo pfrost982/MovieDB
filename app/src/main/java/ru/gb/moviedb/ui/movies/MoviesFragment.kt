@@ -6,8 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.launch
 import ru.gb.moviedb.databinding.FragmentMoviesBinding
 import ru.gb.moviedb.ui.MainViewModel
 import ru.gb.moviedb.ui.ViewModelSaver
@@ -35,13 +37,19 @@ class MoviesFragment : Fragment() {
             requireContext(), LinearLayoutManager
                 .VERTICAL, false
         )
-        val moviesAdapter = MoviesAdapter { position ->
+        val adapter = MoviePagerAdapter { position ->
             Toast.makeText(requireActivity(), "Position: $position", Toast.LENGTH_SHORT).show()
         }
-        recyclerView.adapter = moviesAdapter
-        viewModel.getData()
-        viewModel.liveDataMoviesList.observe(viewLifecycleOwner) { moviesAdapter.submitList(it) }
+        recyclerView.adapter = adapter
+        lifecycleScope.launch {
+            viewModel.getMovieList().observe(viewLifecycleOwner) {
+                it?.let {
+                    adapter.submitData(lifecycle, it)
+                }
+            }
+        }
     }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

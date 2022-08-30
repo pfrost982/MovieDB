@@ -2,8 +2,6 @@ package ru.gb.moviedb.retrofit.gson
 
 
 import com.google.gson.annotations.SerializedName
-import ru.gb.moviedb.retrofit.gson.Cast
-import ru.gb.moviedb.retrofit.gson.Crew
 import java.io.Serializable
 
 data class JsonStructureCreditsMovie(

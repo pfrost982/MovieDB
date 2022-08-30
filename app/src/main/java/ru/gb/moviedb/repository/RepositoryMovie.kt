@@ -1,9 +1,11 @@
 package ru.gb.moviedb.repository
 
+import androidx.lifecycle.LiveData
+import androidx.paging.PagingData
 import ru.gb.moviedb.entity.MovieInfo
 import ru.gb.moviedb.retrofit.gson.Movie
 
 interface RepositoryMovie {
-    suspend fun getTopRated(page: Int): List<Movie>
     suspend fun getMovie(id: Int): MovieInfo
+    fun getAllMovies(): LiveData<PagingData<Movie>>
 }
