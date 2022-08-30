@@ -15,7 +15,7 @@ class MoviePagerAdapter(private val itemListener: OnItemViewClickListener) :
     PagingDataAdapter<Movie, MoviePagerAdapter.MovieViewHolder>(MovieComparator) {
 
     fun interface OnItemViewClickListener {
-        fun onClick(position: Int)
+        fun onClick(position: Movie)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
@@ -26,7 +26,7 @@ class MoviePagerAdapter(private val itemListener: OnItemViewClickListener) :
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
         val movie = getItem(position)!!
         holder.bind(movie)
-        holder.itemView.setOnClickListener { itemListener.onClick(position) }
+        holder.itemView.setOnClickListener { itemListener.onClick(movie) }
     }
 
     inner class MovieViewHolder(private val binding: ItemMovieBinding) :
