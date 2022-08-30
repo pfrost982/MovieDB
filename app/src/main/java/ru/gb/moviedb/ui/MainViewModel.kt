@@ -6,14 +6,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import ru.gb.moviedb.repository.RepositoryMovie
-import ru.gb.moviedb.retrofit.gson.Result
+import ru.gb.moviedb.retrofit.gson.Movie
 
 class MainViewModel : ViewModel() {
     private lateinit var repository: RepositoryMovie
-    private var moviesList: MutableList<Result> = mutableListOf()
+    private var moviesList: MutableList<Movie> = mutableListOf()
 
-    private val _liveDataMoviesList = MutableLiveData<List<Result>>()
-    val liveDataMoviesList: LiveData<List<Result>> = _liveDataMoviesList
+    private val _liveDataMoviesList = MutableLiveData<List<Movie>>()
+    val liveDataMoviesList: LiveData<List<Movie>> = _liveDataMoviesList
     fun setRepository(repository: RepositoryMovie) {
         this.repository = repository
     }

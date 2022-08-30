@@ -9,7 +9,7 @@ import com.bumptech.glide.Glide
 import ru.gb.moviedb.R
 import ru.gb.moviedb.databinding.ItemMovieBinding
 import ru.gb.moviedb.retrofit.ApiService.Companion.BASE_URL_POSTER
-import ru.gb.moviedb.retrofit.gson.Result
+import ru.gb.moviedb.retrofit.gson.Movie
 
 class MoviesAdapter(private val itemListener: OnItemViewClickListener) :
     RecyclerView.Adapter<MoviesAdapter.ViewHolder>() {
@@ -20,7 +20,7 @@ class MoviesAdapter(private val itemListener: OnItemViewClickListener) :
 
     private val diffUtil = AsyncListDiffer(this, DiffCallback())
 
-    fun submitList(newList: List<Result>) {
+    fun submitList(newList: List<Movie>) {
         diffUtil.submitList(newList)
     }
 
@@ -38,7 +38,7 @@ class MoviesAdapter(private val itemListener: OnItemViewClickListener) :
 
     inner class ViewHolder(private val binding: ItemMovieBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(movie: Result) {
+        fun bind(movie: Movie) {
             val urlPoster = BASE_URL_POSTER + movie.posterPath
             Glide.with(this.itemView.context)
                 .load(urlPoster)
@@ -50,15 +50,15 @@ class MoviesAdapter(private val itemListener: OnItemViewClickListener) :
         }
     }
 
-    private inner class DiffCallback : DiffUtil.ItemCallback<Result>() {
+    private inner class DiffCallback : DiffUtil.ItemCallback<Movie>() {
         override fun areItemsTheSame(
-            oldItem: Result,
-            newItem: Result
+            oldItem: Movie,
+            newItem: Movie
         ): Boolean = oldItem.id == newItem.id
 
         override fun areContentsTheSame(
-            oldItem: Result,
-            newItem: Result
+            oldItem: Movie,
+            newItem: Movie
         ): Boolean = oldItem.id == newItem.id
     }
 }

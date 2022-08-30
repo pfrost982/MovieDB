@@ -4,7 +4,7 @@ package ru.gb.moviedb.retrofit.gson
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
-data class Result(
+data class Movie(
     @SerializedName("adult")
     val adult: Boolean,
     @SerializedName("backdrop_path")
