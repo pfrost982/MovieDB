@@ -1,23 +1,17 @@
 package ru.gb.moviedb.ui.details
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.core.view.isVisible
-import androidx.lifecycle.lifecycleScope
-import androidx.paging.LoadState
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import kotlinx.coroutines.launch
+import com.bumptech.glide.Glide
 import ru.gb.moviedb.R
 import ru.gb.moviedb.databinding.FragmentDetailsBinding
-import ru.gb.moviedb.databinding.FragmentMoviesBinding
+import ru.gb.moviedb.retrofit.ApiService
+import ru.gb.moviedb.ui.Facade
 import ru.gb.moviedb.ui.MainViewModel
-import ru.gb.moviedb.ui.ViewModelSaver
-import ru.gb.moviedb.ui.movies.MoviePagerAdapter
 
 class DetailsFragment : Fragment() {
 
@@ -30,30 +24,45 @@ class DetailsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        viewModel = (requireActivity() as ViewModelSaver).getViewModel()
+        viewModel = (requireActivity() as Facade).getViewModel()
         _binding = FragmentDetailsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val recyclerView: RecyclerView = binding.recyclerview
-        recyclerView.layoutManager = LinearLayoutManager(
+        binding.recyclerview.layoutManager = LinearLayoutManager(
             requireContext(), LinearLayoutManager
-                .VERTICAL, false
+                .HORIZONTAL, false
         )
-        val adapter = MoviePagerAdapter { movie ->
-            Toast.makeText(requireActivity(), movie.overview, Toast.LENGTH_LONG).show()
-        }
-        recyclerView.adapter = adapter
+        val adapter = CastAdapter()
+        binding.recyclerview.adapter = adapter
 
-        lifecycleScope.launch {
-            viewModel.getMovieList().observe(viewLifecycleOwner) {
-                it?.let {
-                    adapter.submitData(lifecycle, it)
+        viewModel.liveDataMovieInfo.observe(viewLifecycleOwner) { movieInfo ->
+            adapter.submitList(movieInfo.movieCredits.cast)
+            with(movieInfo.movieInfo) {
+                val urlPoster = ApiService.BASE_URL_POSTER + this.posterPath
+                Glide.with(binding.poster.context)
+                    .load(urlPoster)
+                    .placeholder(R.drawable.ic_movie_poster)
+                    .into(binding.poster)
+                binding.title.text = this.title
+                binding.releaseDate.text = this.releaseDate
+                val genresString = StringBuilder()
+                for (i in genres.indices) {
+                    if (i == genres.size - 1) {
+                        genresString.append(genres[i].name)
+                    } else {
+                        genresString.append(genres[i].name).append(", ")
+                    }
                 }
+                binding.genres.text = genresString
+                binding.runtime.text = this.runtime.toString() + " мин"
+                binding.voteAverage.text = "Рейтинг " + this.voteAverage.toString()
+                binding.overview.text = this.overview
             }
         }
+        viewModel.getMovieInfo()
     }
 
     override fun onDestroyView() {

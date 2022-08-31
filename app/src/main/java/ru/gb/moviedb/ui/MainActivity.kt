@@ -11,9 +11,10 @@ import ru.gb.moviedb.databinding.ActivityMainBinding
 import ru.gb.moviedb.repository.RepositoryMovieImpl
 import ru.gb.moviedb.retrofit.ApiService
 import ru.gb.moviedb.retrofit.ApiService.Companion.BASE_URL
+import ru.gb.moviedb.ui.details.DetailsFragment
 import ru.gb.moviedb.ui.movies.MoviesFragment
 
-class MainActivity : AppCompatActivity(), ViewModelSaver {
+class MainActivity : AppCompatActivity(), Facade {
     private lateinit var binding: ActivityMainBinding
     private lateinit var viewModel: MainViewModel
 
@@ -39,8 +40,17 @@ class MainActivity : AppCompatActivity(), ViewModelSaver {
     }
 
     override fun getViewModel() = viewModel
+
+    override fun openDetailsFragment() {
+        supportFragmentManager.commit {
+            replace<DetailsFragment>(binding.fragmentContainer.id)
+            setReorderingAllowed(true)
+            addToBackStack("Details")
+        }
+    }
 }
 
-fun interface ViewModelSaver {
+interface Facade {
     fun getViewModel(): MainViewModel
+    fun openDetailsFragment()
 }

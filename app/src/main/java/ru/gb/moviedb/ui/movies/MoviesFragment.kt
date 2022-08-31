@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.launch
 import ru.gb.moviedb.databinding.FragmentMoviesBinding
 import ru.gb.moviedb.ui.MainViewModel
-import ru.gb.moviedb.ui.ViewModelSaver
+import ru.gb.moviedb.ui.Facade
 
 class MoviesFragment : Fragment() {
 
@@ -27,7 +27,7 @@ class MoviesFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        viewModel = (requireActivity() as ViewModelSaver).getViewModel()
+        viewModel = (requireActivity() as Facade).getViewModel()
         _binding = FragmentMoviesBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -40,8 +40,10 @@ class MoviesFragment : Fragment() {
                 .VERTICAL, false
         )
         val adapter = MoviePagerAdapter { movie ->
-            Toast.makeText(requireActivity(), movie.overview, Toast.LENGTH_LONG).show()
+            (requireActivity() as Facade).openDetailsFragment()
+            viewModel.movie = movie
         }
+
         recyclerView.adapter = adapter
 
         adapter.addLoadStateListener { loadState ->
